@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🍕 Food Life Predictor - RIP Edition 🥤</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #111017 0%, #362f68 70%, #1b2753 100%);
+      min-height: 100vh;
+      color: #fafafa;
+      text-align: center;
+      margin: 0;
+      padding: 0 10px 40px;
+      user-select: none;
+    }
+    h1 {
+      color: #f0f07f;
+      text-shadow: 2px 2px #2b243f;
+      font-size: 2.8rem;
+      margin-top: 22px;
+      margin-bottom: 8px;
+      letter-spacing: 0.1em;
+    }
+    .container {
+      max-width: 700px;
+      margin: 0 auto 20px auto;
+      background: rgba(37, 34, 42, 0.88);
+      border-radius: 22px;
+      padding: 28px 24px 36px;
+      box-shadow: 0 8px 40px #1a1a2e88;
+      border: 2px solid #f0f07f4d;
+      position: relative;
+    }
+    label, p {
+      font-size: 1.15rem;
+      margin-bottom: 4px;
+      color: #e0e0f0;
+    }
+    select, input[type=number] {
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      width: 160px;
+      background-color: #3b3955;
+      color: #f7f7f7;
+      box-shadow: inset 2px 2px 7px #3a3a59, inset -2px -2px 7px #474667;
+      outline: none;
+      transition: background-color 0.3s;
+    }
+    select:hover, input[type=number]:hover {
+      background-color: #4a4973;
+    }
+    .food-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 20px 0 16px 0;
+    }
+    .food-options label {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      background: #514f74;
+      border-radius: 12px;
+      font-weight: 600;
+      box-shadow: 2px 2px 5px #292838;
+      transition: transform 0.2s ease-in-out, background-color 0.3s;
+      color: #f0f0f0;
+    }
+    .food-options label:hover {
+      background-color: #f0f07f3a;
+      color: #29292b;
+      transform: scale(1.04);
+    }
+    button {
+      background: linear-gradient(90deg, #fff700 40%, #ff5f1f 90%);
+      color: #1a1200;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 48px;
+      font-size: 1.35rem;
+      font-weight: 800;
+      text-shadow: 0 0 5px #804000aa;
+      cursor: pointer;
+      box-shadow: 0 0 25px #ffa600cc;
+      transition: background 0.35s ease-in-out, box-shadow 0.25s ease-in-out;
+      user-select: none;
+    }
+    button:hover {
+      background: linear-gradient(90deg,#ffb61f 50%,#ffa600 99%);
+      box-shadow: 0 0 40px #ff8000ff;
+      transform: scale(1.07);
+    }
+    #result-container {
+      margin-top: 30px;
+      width: 400px;
+      max-width: 95vw;
+      height: 170px;
+      position: relative;
+      margin-left: auto;
+      margin-right: auto;
+      display: none;
+    }
+    .animation-wrapper {
+      position: relative;
+      height: 170px;
+      width: 100%;
+      background: radial-gradient(circle at center, #1b2040bb 70%, transparent 99%);
+      border-radius: 14px;
+      box-shadow: inset 0 0 35px #f0f07fbb;
+      overflow: visible;
+    }
+    #person-img, #grave-img {
+      position: absolute;
+      bottom: 14px;
+      height: auto;
+      border-radius: 8px;
+      filter: drop-shadow(0 6px 12px #0007);
+      user-select: none;
+    }
+    #person-img {
+      left: 0;
+      width: 112px;
+      z-index: 5;
+      cursor: grab;
+      opacity: 1;
+      transform: translateX(0) translateY(0) rotate(0deg);
+      transition:
+        transform 1.2s ease-in-out,
+        opacity 1s ease-in-out;
+    }
+    #person-img.move-horizontal {
+      transform: translateX(230px) translateY(0) rotate(0deg);
+    }
+    #person-img.move-up {
+      transition: transform 1.4s ease-in, opacity 1.4s ease-in;
+      transform: translateX(230px) translateY(-110px) rotate(-25deg);
+      opacity: 0;
+    }
+    #grave-img {
+      right: 0;
+      width: 140px;
+      z-index: 2;
+      filter: drop-shadow(0 6px 14px #231a00aa);
+    }
+    #result-text {
+      font-size: 1.6rem;
+      font-weight: 900;
+      margin-top: 28px;
+      margin-bottom: -5px;
+      text-align: center;
+      letter-spacing: 0.02em;
+      text-shadow: 0 0 12px #fff5aacc;
+      color: #f0f07f;
+      user-select: none;
+    }
+    @media (max-width: 520px) {
+      #person-img {
+        width: 70px;
+      }
+      #grave-img {
+        width: 90px;
+      }
+      #person-img.move-horizontal {
+        transform: translateX(140px) translateY(0) rotate(0deg);
+      }
+      #person-img.move-up {
+        transform: translateX(140px) translateY(-70px) rotate(-25deg);
+      }
+    }
+    @media (max-width: 360px) {
+      #person-img {
+        width: 42px;
+      }
+      #grave-img {
+        width: 52px;
+      }
+      #person-img.move-horizontal {
+        transform: translateX(90px) translateY(0) rotate(0deg);
+      }
+      #person-img.move-up {
+        transform: translateX(90px) translateY(-50px) rotate(-25deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🍔 Food Life Predictor - RIP Edition 🥤</h1>
+    <p>Enter your precious details and select your 🍕 Doom Foods:</p>
+    <label for="gender">Select your super-powered gender:</label><br />
+    <select id="gender" required>
+      <option value="">-- Choose one --</option>
+      <option value="male">Male (Mighty Man)</option>
+      <option value="female">Female (Fearless Femme)</option>
+      <option value="other">Other (Awesome Alien)</option>
+    </select>
+    <br />
+    <label for="age">How many wonderful years have you survived?</label><br />
+    <input type="number" id="age" min="1" max="120" placeholder="Enter your age" required />
+    <div class="food-options">
+      <label><input type="checkbox" value="0" /> 🍕 Pizza (Processed Power!)</label>
+      <label><input type="checkbox" value="1" /> 🍔 Burger (Juicy But Risky)</label>
+      <label><input type="checkbox" value="2" /> 🍟 Fries (Greasy Goodness)</label>
+      <label><input type="checkbox" value="3" /> 🥗 Salad (Green Shield)</label>
+      <label><input type="checkbox" value="4" /> 🐟 Fish (Swim Strong)</label>
+      <label><input type="checkbox" value="5" /> 🥛 Milk (Calcium Charge)</label>
+      <label><input type="checkbox" value="6" /> 🍩 Donut (Sweet Surrender)</label>
+      <label><input type="checkbox" value="7" /> 🥩 Steak (Beefy Blast)</label>
+      <label><input type="checkbox" value="8" /> 🍎 Apple (An Apple A Day!)</label>
+      <label><input type="checkbox" value="9" /> 🥤 Soda (Fizzy Foe)</label>
+    </div>
+    <button id="predict-btn" onclick="calculateLife()">Smash my lifespan!</button>
+    <div id="result-container" aria-live="polite" aria-atomic="true">
+      <div class="animation-wrapper">
+        <img id="person-img" src="cj.jpg" alt="CJ looking worried" title="CJ preparing for doom" />
+        <img id="grave-img" src="grave.jpg" alt="Grave" title="Your last resting place" />
+      </div>
+    </div>
+    <div id="result-text" role="alert"></div>
+  </div>
+  <!-- Funny crying sound from freesound.org (creative commons) -->
+  <audio id="cry-sound" src="character_male_voice_crying.mp3"></audio>
+  <script>
+    const foods = [
+      { name: 'Pizza', toxic: 7, energy: 4 },
+      { name: 'Burger', toxic: 8, energy: 3 },
+      { name: 'Fries', toxic: 6, energy: 2 },
+      { name: 'Salad', toxic: 1, energy: 9 },
+      { name: 'Fish', toxic: 2, energy: 8 },
+      { name: 'Milk', toxic: 1, energy: 7 },
+      { name: 'Donut', toxic: 9, energy: 2 },
+      { name: 'Steak', toxic: 5, energy: 6 },
+      { name: 'Apple', toxic: 0, energy: 10 },
+      { name: 'Soda', toxic: 10, energy: 1 },
+    ];
+
+    function calculateLife() {
+      const gender = document.getElementById('gender').value;
+      const age = parseInt(document.getElementById('age').value, 10);
+      const checkboxes = [...document.querySelectorAll('.food-options input:checked')];
+      if (!gender) {
+        alert('⚠️ Please select a gender first!');
+        return;
+      }
+      if (!age || checkboxes.length < 4) {
+        alert('⚠️ You must enter your age and choose at least 4 doom foods! 😜');
+        return;
+      }
+      let toxicSum = 0;
+      let energySum = 0;
+      checkboxes.forEach((cb) => {
+        const food = foods[parseInt(cb.value, 10)];
+        toxicSum += food.toxic;
+        energySum += food.energy;
+      });
+      let baseLife = gender === 'female' ? 82 : 78;
+      if (gender === 'other') baseLife = 80;
+      let yearsLeft = baseLife - age + Math.floor((energySum - toxicSum) / 2);
+      if (yearsLeft < 0) yearsLeft = Math.floor(Math.random() * 6);
+
+      const resultText = document.getElementById('result-text');
+      const resultContainer = document.getElementById('result-container');
+      const personImg = document.getElementById('person-img');
+      const crySound = document.getElementById('cry-sound');
+      resultText.textContent = `⏳ You have about ${yearsLeft} years left... Prepare for impact! 💀`;
+      resultContainer.style.display = 'block';
+      personImg.classList.remove('move-horizontal', 'move-up');
+      crySound.pause();
+      crySound.currentTime = 0;
+
+      const btn = document.getElementById('predict-btn');
+      btn.disabled = true;
+      btn.textContent = 'Brace yourself...';
+
+      // Step 1: move horizontally toward grave
+      personImg.classList.add('move-horizontal');
+
+      // Step 2: after 1.3s move up and fade out
+      setTimeout(() => {
+        personImg.classList.remove('move-horizontal');
+        personImg.classList.add('move-up');
+        crySound.play();
+      }, 1300);
+
+      // Disable button permanently to prevent reappear
+      btn.disabled = true;
+      btn.textContent = "Game over - no respawns!";
+
+    }
+  </script>
+</body>
+</html>
